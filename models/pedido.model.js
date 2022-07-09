@@ -3,13 +3,11 @@ const Producto = require( './producto.model' )
 
 const getAllProductsById = async ( id ) => {
 	let pedidos = await executeQuery( 'select * from pedidos where usuario_id = ?', [ id ] )
-	let pedidosReturn = []
 	for ( let pedido of pedidos ) {
-		pedidosReturn.push( await Producto.getProductById( pedido.producto_id ) )
-		console.log( pedidosReturn )
+		pedido.producto = []
+		pedido.producto.push( await Producto.getProductById( pedido.producto_id ) )
 	};
-	console.log( pedidos )
-	return pedidosReturn
+	return pedidos
 }
 
 module.exports = { getAllProductsById }

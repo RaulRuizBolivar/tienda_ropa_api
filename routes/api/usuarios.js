@@ -18,7 +18,7 @@ router.get('/:id', async (req, res) => {
 	} catch (err) {
 		res.status(400).json({ error: err.message })
 	}
-})
+});
 
 router.post('/registro',
 	body('email')
@@ -50,10 +50,10 @@ router.post('/registro',
 			// Creación del usuario
 			const result = await Usuario.create(req.body);
 			res.json(result);
+
 		} catch (err) {
 			res.json({ error: err.message });
-		}
-
+		};
 	});
 
 

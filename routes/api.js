@@ -4,7 +4,7 @@ const apiProductosRouter = require('./api/productos');
 const apiUsuariosRouter = require('./api/usuarios');
 
 
-router.use('/usuarios', require('./api/usuarios'));
-router.use('/productos', require('./api/productos'));
+router.use('/usuarios', apiUsuariosRouter)
+router.use('/productos', apiProductosRouter)
 
 module.exports = router;

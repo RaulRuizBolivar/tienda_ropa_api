@@ -1,0 +1,11 @@
+POST http://localhost:3000/api/usuarios/registro
+Content-Type: application/json
+
+{
+    "email": "jorge2@testing.com",
+    "password": "12345",
+    "direccion": "123 Calle do testing",
+    "nombre_completo": "Jorge Test"
+}
+
+###

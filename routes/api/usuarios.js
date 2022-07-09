@@ -50,10 +50,10 @@ router.post('/registro',
 			// Creación del usuario
 			const result = await Usuario.create(req.body);
 			res.json(result);
+
 		} catch (err) {
 			res.json({ error: err.message });
-		}
-
+		};
 	});
 
 

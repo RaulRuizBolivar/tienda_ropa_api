@@ -1,5 +1,5 @@
-const bcrypt = require( 'bcryptjs' );
 const router = require( 'express' ).Router()
+const bcrypt = require( 'bcryptjs' );
 const Usuario = require( '../../models/usuario.model' )
 const Pedido = require( '../../models/pedido.model' )
 const Producto = require( '../../models/producto.model' )

@@ -1,60 +1,83 @@
-const router = require( 'express' ).Router();
-const bcrypt = require( 'bcryptjs' );
-const Usuario = require( '../../models/usuario.model' );
-const Pedido = require( '../../models/pedido.model' );
-const Producto = require( '../../models/producto.model' );
-const { body, validationResult } = require( 'express-validator' );
+const router = require('express').Router();
+const bcrypt = require('bcryptjs');
+const Usuario = require('../../models/usuario.model');
+const Pedido = require('../../models/pedido.model');
+const Producto = require('../../models/producto.model');
+const { body, validationResult } = require('express-validator');
+const { createToken } = require('../../helpers/utils');
 
-router.get( '/', ( req, res ) => {
-	res.json( { success: 'success' } );
-} );
+router.get('/', (req, res) => {
+	res.json({ success: 'success' });
+});
 
-router.get( '/:id', async ( req, res ) => {
+router.get('/:id', async (req, res) => {
 	try {
 		const userId = req.params.id;
-		const user = await Usuario.getById( userId );
-		user.pedidos = await Pedido.getAllProductsById( userId );
-		res.json( user );
-	} catch ( err ) {
-		res.status( 400 ).json( { error: err.message } );
+		const user = await Usuario.getById(userId);
+		user.pedidos = await Pedido.getAllProductsById(userId);
+		res.json(user);
+	} catch (err) {
+		res.status(400).json({ error: err.message });
 	}
-} );
+});
 
-router.post( '/registro',
-	body( 'email' )
+router.post('/registro',
+	body('email')
 		.exists()
-		.withMessage( 'El campo de email es requerido' )
+		.withMessage('El campo de email es requerido')
 		.isEmail()
-		.withMessage( 'El email debe tener un formato correcto' ),
-	body( 'password' )
+		.withMessage('El email debe tener un formato correcto'),
+	body('password')
 		.exists()
-		.withMessage( 'El campo de password es requerido' ),
-	body( 'nombre_completo' )
+		.withMessage('El campo de password es requerido'),
+	body('nombre_completo')
 		.exists()
-		.withMessage( 'El campo de nombre_completo es requerido' ),
-	body( 'direccion' )
+		.withMessage('El campo de nombre_completo es requerido'),
+	body('direccion')
 		.exists()
-		.withMessage( 'El campo de direccion es requerido' )
-	, async ( req, res ) => {
+		.withMessage('El campo de direccion es requerido')
+	, async (req, res) => {
 
 		// Comprobar los errores de las diferentes validaciones
-		const errors = validationResult( req );
-		if ( !errors.isEmpty() ) {
-			return res.json( errors.array() );
+		const errors = validationResult(req);
+		if (!errors.isEmpty()) {
+			return res.json(errors.array());
 		};
 
 		try {
 			// Encriptasió de pass
-			req.body.password = bcrypt.hashSync( req.body.password, 13 );
+			req.body.password = bcrypt.hashSync(req.body.password, 13);
 
 			// Creación del usuario
-			const result = await Usuario.create( req.body );
-			res.json( result );
+			const result = await Usuario.create(req.body);
+			res.json(result);
 
-		} catch ( err ) {
-			res.json( { error: err.message } );
+		} catch (err) {
+			res.json({ error: err.message });
 		};
-	} );
+	});
 
+router.post('/login', async (req, res) => {
+	const { email, password } = req.body;
+
+	// DB Check if email exists
+	const user = await Usuario.getByEmail(email);
+	if (!user) {
+		return res.json({ error: 'Email y/o contraseña incorrectos. EMAIL ERROR' });
+	};
+
+	// Password compare hash_password === db_password
+	const samePass = bcrypt.compareSync(password, user.password);
+	if (!samePass) {
+		return res.json({ error: 'Email y/o contraseña incorrectos. PASS ERROR' });
+	};
+
+	// Creación de token  createToken --> (usuario.model.js)
+	res.json({
+		success: 'Login correcto!',
+		token: createToken(user),
+	});
+
+});
 
 module.exports = router;

@@ -1,40 +1,36 @@
 const dayjs = require("dayjs");
 const jwt = require("jsonwebtoken");
-const Usuarios = require("../models/usuarios.model");
+const Usuario = require("../models/usuario.model");
 
 const checkToken = async (req, res, next) => {
-	// 1 Comprobar si el token viene incluido con la peticion
-	if (!req.headers["authorization"]) {
-		return res.json({ error: "El token no está en la cabecera" });
-	}
-	// 2 Comprobar si el token es correcto
-	const token = req.headers["authorization"];
+
+	// Is token in headers?
+	if (!req.headers['authorization']) {
+		return res.json({ error: 'No llevas el token encima, go back.' });
+	};
+
+	// Is token correct?
+	const token = req.headers['authorization'];
+
 	let obj;
 	try {
-		obj = jwt.verify(token, "gimnasio");
+		obj = jwt.verify(token, "baba12345");
 	} catch (err) {
-		return res.json({ error: "Que 👃 de token me estas mandando?? 👹" });
-	}
-	// 3 Comprobar si el token esta caducado
-	if (obj.expDate < dayjs().unix()) {
-		return res.json({ error: "El token ha caducado 🤮" });
-	}
+		return res.json({ error: 'El token no es correcto.' });
+	};
 
-	// Recuperar el usuario que hace la peticion --> obj.userId
+	// Is token expired?
 
-	const user = await Usuarios.getById(obj.userId);
+	if (dayjs().unix() > obj.expDate) {
+		return res.json({ error: 'Token caducado, go back home.' });
+	};
+
+	// console.log(obj);
+	// Recuperamos user que intenta loguearse
+	const user = await Usuario.getById(obj.userId);
 	req.user = user;
 
 	next();
 };
 
-const checkRole = (role) => {
-	return (req, res, next) => {
-		if (req.user.role !== role) {
-			return res.json({ error: "El usuario no tiene permitido el acceso ⛔️" });
-		}
-		next();
-	};
-};
-
-module.exports = { checkToken, checkRole };
+module.exports = { checkToken };

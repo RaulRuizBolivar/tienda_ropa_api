@@ -4,6 +4,10 @@ const getById = (id) => {
     return executeQueryOne('select * from usuario where id = ?', [id]);
 };
 
+const getByEmail = (email) => {
+    return executeQueryOne('SELECT * FROM usuario WHERE email = ?', [email]);
+};
+
 const create = ({ email, password, nombre_completo, direccion }) => {
     return executeQuery(
         'INSERT INTO usuario (email, password, nombre_completo, direccion) VALUES (?,?,?,?)',
@@ -11,4 +15,6 @@ const create = ({ email, password, nombre_completo, direccion }) => {
 };
 
 
-module.exports = { create, getById }
+
+
+module.exports = { getById, getByEmail, create }

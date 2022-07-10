@@ -2,10 +2,25 @@ POST http://localhost:3000/api/usuarios/registro
 Content-Type: application/json
 
 {
-    "email": "jorge2@testing.com",
+    "email": "jorge3@testing.com",
     "password": "12345",
     "direccion": "123 Calle do testing",
     "nombre_completo": "Jorge Test"
 }
+
+###
+
+POST http://localhost:3000/api/usuarios/login
+Content-Type: application/json
+
+{
+    "email": "jorge2@testing.com",
+    "password": "12345"
+}
+
+###
+
+GET http://localhost:3000/api/productos
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIzLCJleHBEYXRlIjoxNjU3NTM0NzYzLCJpYXQiOjE2NTc0NDgzNjN9.PHcs_F6BEYpDXyf3idbb-TI2GrkyWn5X6ehdExHGMNA
 
 ###
